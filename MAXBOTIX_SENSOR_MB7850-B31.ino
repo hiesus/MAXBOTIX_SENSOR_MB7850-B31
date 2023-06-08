@@ -1,5 +1,4 @@
 /***TESTING SOFTWARE MAXBOTIX SENSOR MB7850-B31.
-This version has not been verified when users send commands M or m, updates may be needed.
 This code was successfully tested on Arduino nano atmega328P
 ***/
 
@@ -24,6 +23,7 @@ String data; //Allocate user serial incomming strings
 bool w=false; //Write command to Maxbotix sensor
 char comm[]= {'T','t','R','r','M','m','A','a','D','d'}; //Maxbotix available command list
 int n = sizeof(comm) / sizeof(char) - 1; //Number of comm elements - 1
+bool MB7851=false;
 
 void setup() 
 {
@@ -39,7 +39,7 @@ void setup()
     Serial.println("“a” Analog Envelope OFF");
     Serial.println("“D” Advanced Range ON");
     Serial.println("“d” Advanced Range OFF");
-    Serial.println("When a, d, M or m commands are used, it may be necessary to de-energize your Maxbotix sensor to fully apply changes!");
+    Serial.println("When a, d commands are used, it may be necessary to de-energize your Maxbotix sensor to fully apply changes!");
 }
 
 void loop() 
@@ -59,11 +59,11 @@ void loop()
     if (mySerial.available() > 0) { 
       // Read and process the data
       String c = mySerial.readStringUntil(13);
+           if (w==true)              {mySerial.write(data[0]); w=false;}   //write a command to Maxbotix sensor when w is true
+      else if (c=="Send 1000s Digit") {mySerial.write(data[1]); MB7851=true;}
+      else if (c=="Send 100s Digit")  {int m; if (MB7851==true) m=2; else m=1; mySerial.write(data[m]);             }
+      else if (c=="Send 10s Digit")   {int m; if (MB7851==true) m=3; else m=2; mySerial.write(data[m]);             }
+      else if (c=="Send 1s Digit")    {int m; if (MB7851==true) m=4; else m=3; mySerial.write(data[m]);MB7851=false;}
       Serial.println(c); //print to user any string incomming from Maxbotix sensor
-      if (c=="Send 100s Digit") for (int k=1;k<4;k++) Serial.write(data[k]);
-      if (w==true){
-         mySerial.write(data[0]); //write a command to Maxbotix sensor when w is true
-        w=false;
-      }
     }
 }
