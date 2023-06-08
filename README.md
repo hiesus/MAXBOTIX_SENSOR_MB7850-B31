@@ -1,6 +1,5 @@
 MAXBOTIX_SENSOR_MB7850-B31
 TESTING SOFTWARE MAXBOTIX SENSOR MB7850-B31
-This version has not been verified when users send commands M or m, updates may be needed.
 This code was successfully tested on Arduino nano atmega328P
 
 /*  ELECTRIC WIRE CONNECTIONS: 
